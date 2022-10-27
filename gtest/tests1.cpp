@@ -82,8 +82,8 @@ TEST(CheckPoint, StringCheck)
 	tree.insert("e", "twelve");
 	tree.insert("d", "fifteen");
 		
-	std::vector<int> trav = tree.inOrder();
-	std::vector<int> expected = {"a", "b", "c", "d", "e"};
+	std::vector<std::string> trav = tree.inOrder();
+	std::vector<std::string> expected = {"a", "b", "c", "d", "e"};
 	EXPECT_TRUE( trav == expected );
 }
 
