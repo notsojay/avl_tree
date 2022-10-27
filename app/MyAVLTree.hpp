@@ -184,8 +184,15 @@ const Value & MyAVLTree<Key, Value>::find(const Key & k) const
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
 {
-	if(isEmpty()) root = new MyAVLNode<Key, Value>(k, v);
-	else insert(k, v, root);
+	if(isEmpty())
+	{
+		root = new MyAVLNode<Key, Value>(k, v);
+		++nodeCount;
+	}
+	else 
+	{
+		insert(k, v, root);
+	}
 }
 
 template<typename Key, typename Value>
@@ -280,8 +287,8 @@ void MyAVLTree<Key, Value>::preOrder(std::vector<Key>& path, MyAVLNode<Key, Valu
 {
 	if(!node) return;
 	path.push_back(node->key);
-	inOrder(path, node->left);
-	inOrder(path, node->right);
+	preOrder(path, node->left);
+	preOrder(path, node->right);
 }
 
 
@@ -289,8 +296,8 @@ template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::postOrder(std::vector<Key>& path, MyAVLNode<Key, Value>* node) const
 {
 	if(!node) return;
-	inOrder(path, node->left);
-	inOrder(path, node->right);
+	postOrder(path, node->left);
+	postOrder(path, node->right);
 	path.push_back(node->key);
 }
 
