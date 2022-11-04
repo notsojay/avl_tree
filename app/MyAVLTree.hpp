@@ -5,6 +5,8 @@
 #include <string>
 #include <stack>
 #include <vector>
+#include <cmath>
+#include <iostream>
 
 template<typename Key, typename Value> class MyAVLTree;
 
@@ -22,11 +24,16 @@ class MyAVLNode
 private:
 	Key key;
 	Value val;
+	int height;
 	MyAVLNode* left;
 	MyAVLNode* right;
 
 public:
-	MyAVLNode(Key key = Key(), Value val = Value(), MyAVLNode* left = nullptr, MyAVLNode* right = nullptr):key(key), val(val), left(left), right(right)
+	MyAVLNode(Key key = Key(), Value val = Value(), MyAVLNode* left = nullptr, MyAVLNode* right = nullptr):key(key), val(val), height(0), left(left), right(right)
+	{
+		
+	}
+	~MyAVLNode()
 	{
 		
 	}
@@ -94,12 +101,18 @@ public:
 
 private:
 	MyAVLNode<Key, Value>* find(const Key & k, MyAVLNode<Key, Value>* node) const noexcept;
-	void insert(const Key & k, const Value & v, MyAVLNode<Key, Value>* node);
+	MyAVLNode<Key, Value>* insert(const Key & k, const Value & v, MyAVLNode<Key, Value>* node);
 	void inOrder(std::vector<Key>& path, MyAVLNode<Key, Value>* node) const;
 	void preOrder(std::vector<Key>& path, MyAVLNode<Key, Value>* node) const;
 	void postOrder(std::vector<Key>& path, MyAVLNode<Key, Value>* node) const;
 	void clear();
 	void clear(MyAVLNode<Key, Value>* node);
+	int getBalancedFactor(MyAVLNode<Key, Value>* node) const;
+	MyAVLNode<Key, Value>* leftRotation(MyAVLNode<Key, Value>* node);
+	MyAVLNode<Key, Value>* rightRotation(MyAVLNode<Key, Value>* node);
+	MyAVLNode<Key, Value>* leftRightRotation(MyAVLNode<Key, Value>* node);
+	MyAVLNode<Key, Value>* rightLeftRotation(MyAVLNode<Key, Value>* node);
+	void setHeight(MyAVLNode<Key, Value>* node);
 };
 
 
@@ -164,7 +177,7 @@ bool MyAVLTree<Key, Value>::contains(const Key &k) const noexcept
 template<typename Key, typename Value>
 Value & MyAVLTree<Key, Value>::find(const Key & k)
 {
-	if(isEmpty()) throw ElementNotFoundException("KEY IS NOT IN THE TREE");
+	if(isEmpty()) throw ElementNotFoundException("TREE IS EMPTY");
 	MyAVLNode<Key, Value>* result = find(k, root);
 	if(result) return result->val;
 	else throw ElementNotFoundException("KEY IS NOT IN THE TREE");
@@ -174,7 +187,7 @@ Value & MyAVLTree<Key, Value>::find(const Key & k)
 template<typename Key, typename Value>
 const Value & MyAVLTree<Key, Value>::find(const Key & k) const
 {
-	if(isEmpty()) throw ElementNotFoundException("KEY IS NOT IN THE TREE");
+	if(isEmpty()) throw ElementNotFoundException("TREE IS EMPTY");
 	const MyAVLNode<Key, Value>* result = find(k, root);
 	if(result) return result->val;
 	else throw ElementNotFoundException("KEY IS NOT IN THE TREE");
@@ -191,7 +204,7 @@ void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
 	}
 	else 
 	{
-		insert(k, v, root);
+		root = insert(k, v, root);
 	}
 }
 
@@ -229,7 +242,6 @@ template<typename Key, typename Value>
 MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::find(const Key & k, MyAVLNode<Key, Value>* node) const noexcept
 {
 	if(!node) return nullptr;
-	//return (!(node->key) < k && !(k < node->key)) ? node : node->key < k ? find(k, node->right) : find(k, node->left);
 	if(node->key < k) return find(k, node->right);
 	else if(k < node->key) return find(k, node->left);
 	else return node;
@@ -237,38 +249,37 @@ MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::find(const Key & k, MyAVLNode<Key,
 
 
 template<typename Key, typename Value>
-void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v, MyAVLNode<Key, Value>* node)
+MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::insert(const Key & k, const Value & v, MyAVLNode<Key, Value>* node)
 {
-	if(k < node->key)
+	if(node == nullptr)
 	{
-		if(node->left)
-		{
-			insert(k, v, node->left);
-		}
-		else 
-		{
-			MyAVLNode<Key, Value>* newNode = new MyAVLNode<Key, Value>(k, v);
-			node->left = newNode;
-			++nodeCount;
-		}
+		node = new MyAVLNode<Key, Value>(k, v);
+		++nodeCount;
+		return node;
 	}
-	else if(node->key < k)
-	{
-		if(node->right)
-		{
-			insert(k, v, node->right);
-		}
-		else 
-		{
-			MyAVLNode<Key, Value>* newNode = new MyAVLNode<Key, Value>(k, v);
-			node->right = newNode;
-			++nodeCount;
-		}
-	}
+	if(k < node->key) 
+		node->left = insert(k, v, node->left);
+	else if(node->key < k) 
+		node->right = insert(k, v, node->right);
 	else 
-	{
 		node->val = v;
+	setHeight(node);
+	int balanced = getBalancedFactor(node);
+	if(balanced > 1)
+	{
+		if(k < node->left->key) 
+			return rightRotation(node);
+		else 
+			return leftRightRotation(node);
 	}
+	else if(balanced < -1)
+	{
+		if(node->right->key < k)
+			return leftRotation(node);
+		else  
+			return rightLeftRotation(node);
+	}
+	return node;
 }
 
 
@@ -301,11 +312,14 @@ void MyAVLTree<Key, Value>::postOrder(std::vector<Key>& path, MyAVLNode<Key, Val
 	path.push_back(node->key);
 }
 
+
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::clear()
 {
 	clear(root);
+	nodeCount = 0;
 }
+
 
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::clear(MyAVLNode<Key, Value>* node)
@@ -316,4 +330,65 @@ void MyAVLTree<Key, Value>::clear(MyAVLNode<Key, Value>* node)
 	delete node;
 	node = nullptr;
 }
+
+
+template<typename Key, typename Value>
+int MyAVLTree<Key, Value>::getBalancedFactor(MyAVLNode<Key, Value>* node) const
+{
+	if(!node->left && !node->right) return 0;
+	else if(!node->left) return 0 - node->right->height;
+	else if(!node->right) return node->left->height - 0;
+	else return node->left->height - node->right->height;
+}
+
+
+template<typename Key, typename Value>
+MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::leftRotation(MyAVLNode<Key, Value>* node)
+{
+	MyAVLNode<Key, Value>* temp = node->right;
+	node->right = temp->left;
+	temp->left = node;
+	setHeight(node);
+	setHeight(temp);
+	return temp;
+}
+
+
+template<typename Key, typename Value>
+MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::rightRotation(MyAVLNode<Key, Value>* node)
+{
+	MyAVLNode<Key, Value>* temp = node->left;
+	node->left = temp->right;
+	temp->right = node;
+	setHeight(node);
+	setHeight(temp);
+	return temp;
+}
+
+
+template<typename Key, typename Value>
+MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::leftRightRotation(MyAVLNode<Key, Value>* node)
+{
+	node->left = leftRotation(node->left);
+	return rightRotation(node);
+}
+
+
+template<typename Key, typename Value>
+MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::rightLeftRotation(MyAVLNode<Key, Value>* node)
+{
+	node->right = rightRotation(node->right);
+	return leftRotation(node);
+}
+
+
+template<typename Key, typename Value>
+void MyAVLTree<Key, Value>::setHeight(MyAVLNode<Key, Value>* node)
+{
+	if(!node->left && !node->right) node->height = 1;
+	else if(!node->left) node->height = node->right->height+1;
+	else if(!node->right) node->height = node->left->height+1;
+	else node->height = std::max(node->left->height, node->right->height)+1;
+}
+
 #endif 
