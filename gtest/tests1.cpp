@@ -150,14 +150,16 @@ TEST(PostCheckPoint, RotationCheck2)
 		tree.insert(i,i);
 	}
 	std::vector<int> trav = tree.postOrder();
-	std::vector<int> expected = {1,3,2,5,7,6,9,10,8,4};
-	EXPECT_TRUE( trav == expected );
+	std::vector<int> expected1 = {1,3,2,5,7,6,9,10,8,4};
+	EXPECT_TRUE( trav == expected1 );
+	
 	trav = tree.inOrder();
-	std::vector<int> expected = {1,2,3,4,5,6,7,8,9,10};
-	EXPECT_TRUE( trav == expected );
+	std::vector<int> expected2 = {1,2,3,4,5,6,7,8,9,10};
+	EXPECT_TRUE( trav == expected2 );
+	
 	trav = tree.preOrder();
-	std::vector<int> expected = {4,2,1,3,8,6,5,7,9,10};
-	EXPECT_TRUE( trav == expected );
+	std::vector<int> expected3 = {4,2,1,3,8,6,5,7,9,10};
+	EXPECT_TRUE( trav == expected3 );
 }
 
 TEST(PostCheckPoint, RotationCheck3)
