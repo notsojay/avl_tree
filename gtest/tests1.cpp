@@ -99,46 +99,18 @@ TEST(PostCheckPoint, InOrderTraversal)
 	EXPECT_TRUE( trav == expected );
 }
 
-TEST(PostCheckPoint, PreOrderTraversal)
-{
-	MyAVLTree<int, std::string> tree;
-	tree.insert(5, "foo");
-	tree.insert(3, "sna");
-	tree.insert(10, "bar");
-	tree.insert(12, "twelve");
-	tree.insert(15, "fifteen");
-		
-	std::vector<int> trav = tree.preOrder();
-	std::vector<int> expected = {5, 3, 10, 12, 15};
-	EXPECT_TRUE( trav == expected );
-}
-
-TEST(PostCheckPoint, PostOrderTraversal)
-{
-	MyAVLTree<int, std::string> tree;
-	tree.insert(5, "foo");
-	tree.insert(3, "sna");
-	tree.insert(10, "bar");
-	tree.insert(12, "twelve");
-	tree.insert(15, "fifteen");
-		
-	std::vector<int> trav = tree.postOrder();
-	std::vector<int> expected = {3, 15, 12, 10, 5};
-	EXPECT_TRUE( trav == expected );
-}
-
 TEST(PostCheckPoint, RotationCheck1)
 {
 	MyAVLTree<char, char> tree;
-	tree.insert('a', 'a');
-	tree.insert('b', 'b');
-	tree.insert('c', 'c');
+	tree.insert('c', 'a');
+	tree.insert('f', 'b');
+	tree.insert('a', 'c');
 	tree.insert('d', 'd');
-	tree.insert('e', 'e');
-	tree.insert('f', 'f');
+	tree.insert('b', 'e');
+	tree.insert('e', 'f');
 		
-	std::vector<char> trav = tree.postOrder();
-	std::vector<char> expected = {'a','c','b','f','e','d'};
+	std::vector<char> trav = tree.inOrder();
+	std::vector<char> expected = {'a','b','c','d','e'};
 	EXPECT_TRUE( trav == expected );
 }
 
@@ -149,17 +121,9 @@ TEST(PostCheckPoint, RotationCheck2)
 	{
 		tree.insert(i,i);
 	}
-	std::vector<int> trav = tree.postOrder();
-	std::vector<int> expected1 = {1,3,2,5,7,6,9,10,8,4};
-	EXPECT_TRUE( trav == expected1 );
-	
 	trav = tree.inOrder();
-	std::vector<int> expected2 = {1,2,3,4,5,6,7,8,9,10};
-	EXPECT_TRUE( trav == expected2 );
-	
-	trav = tree.preOrder();
-	std::vector<int> expected3 = {4,2,1,3,8,6,5,7,9,10};
-	EXPECT_TRUE( trav == expected3 );
+	std::vector<int> expected = {1,2,3,4,5,6,7,8,9,10};
+	EXPECT_TRUE( trav == expected );
 }
 
 TEST(PostCheckPoint, RotationCheck3)
@@ -182,6 +146,9 @@ TEST(PostCheckPoint, RotationCheck4)
 	for(int i = 9999; i >= -9999; --i)
 	{
 		tree.insert(i,i);
+	}
+	for(int i = -9999; i <= 9999; ++i)
+	{
 		expected.push_back(i);
 	}
 	std::vector<int> trav = tree.inOrder();
@@ -216,14 +183,29 @@ TEST(PostCheckPoint, RotationCheck6)
 
 TEST(PostCheckPoint, RotationCheck7)
 {
+	MyAVLTree<int, int> tree;
+	tree.insert(7, 7);
+	tree.insert(3, 3);
+	tree.insert(9, 9);
+	tree.insert(6, 6);
+	tree.insert(2, 2);
+	tree.insert(1, 1);
+		
+	std::vector<int> trav = tree.inOrder();
+	std::vector<int> expected = {1, 2, 3, 6, 7, 9};
+	EXPECT_TRUE( trav == expected );
+}
+
+TEST(PostCheckPoint, RotationCheck7)
+{
 	MyAVLTree<std::string, std::string> tree;
-	tree.insert("aaaaaa", "aaaaaa");
-	tree.insert("bbbbbb", "bbbbbb");
 	tree.insert("cccccc", "cccccc");
-	tree.insert("dddddd", "dddddd");
 	tree.insert("eeeeee", "eeeeee");
-	tree.insert("ffffff", "ffffff");
+	tree.insert("aaaaaa", "aaaaaa");
+	tree.insert("dddddd", "dddddd");
+	tree.insert("bbbbbb", "bbbbbb");
 	tree.insert("gggggg", "gggggg");
+	tree.insert("ffffff", "ffffff"));
 	std::vector<std::string> expected = {"aaaaaa","bbbbbb","cccccc","dddddd","eeeeee","ffffff","gggggg"};
 	std::vector<std::string> trav = tree.inOrder();
 	EXPECT_TRUE( trav == expected );
