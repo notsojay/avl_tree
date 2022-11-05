@@ -117,18 +117,6 @@ TEST(PostCheckPoint, RotationCheck1)
 TEST(PostCheckPoint, RotationCheck2)
 {
 	MyAVLTree<int, int> tree;
-	for(int i = 1; i < 11; ++i)
-	{
-		tree.insert(i,i);
-	}
-	trav = tree.inOrder();
-	std::vector<int> expected = {1,2,3,4,5,6,7,8,9,10};
-	EXPECT_TRUE( trav == expected );
-}
-
-TEST(PostCheckPoint, RotationCheck3)
-{
-	MyAVLTree<int, int> tree;
 	std::vector<int> expected;
 	for(int i = -9999; i <= 9999; ++i)
 	{
@@ -139,7 +127,7 @@ TEST(PostCheckPoint, RotationCheck3)
 	EXPECT_TRUE( trav == expected );
 }
 	
-TEST(PostCheckPoint, RotationCheck4)
+TEST(PostCheckPoint, RotationCheck3)
 {
 	MyAVLTree<int, int> tree;
 	std::vector<int> expected;
@@ -155,7 +143,7 @@ TEST(PostCheckPoint, RotationCheck4)
 	EXPECT_TRUE( trav == expected );
 }
 
-TEST(PostCheckPoint, RotationCheck5)
+TEST(PostCheckPoint, RotationCheck4)
 {
 	MyAVLTree<char, char> tree;
 	std::vector<char> expected;
@@ -168,7 +156,7 @@ TEST(PostCheckPoint, RotationCheck5)
 	EXPECT_TRUE( trav == expected );
 }
 
-TEST(PostCheckPoint, RotationCheck6)
+TEST(PostCheckPoint, RotationCheck5)
 {
 	MyAVLTree<double, double> tree;
 	std::vector<double> expected;
@@ -181,7 +169,7 @@ TEST(PostCheckPoint, RotationCheck6)
 	EXPECT_TRUE( trav == expected );
 }
 
-TEST(PostCheckPoint, RotationCheck7)
+TEST(PostCheckPoint, RotationCheck6)
 {
 	MyAVLTree<int, int> tree;
 	tree.insert(7, 7);
