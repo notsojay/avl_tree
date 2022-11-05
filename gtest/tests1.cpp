@@ -205,7 +205,7 @@ TEST(PostCheckPoint, RotationCheck7)
 	tree.insert("dddddd", "dddddd");
 	tree.insert("bbbbbb", "bbbbbb");
 	tree.insert("gggggg", "gggggg");
-	tree.insert("ffffff", "ffffff"));
+	tree.insert("ffffff", "ffffff");
 	std::vector<std::string> expected = {"aaaaaa","bbbbbb","cccccc","dddddd","eeeeee","ffffff","gggggg"};
 	std::vector<std::string> trav = tree.inOrder();
 	EXPECT_TRUE( trav == expected );
