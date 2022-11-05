@@ -212,7 +212,6 @@ TEST(PostCheckPoint, RotationCheck6)
 	}
 	std::vector<double> trav = tree.inOrder();
 	EXPECT_TRUE( trav == expected );
-	}
 }
 
 TEST(PostCheckPoint, RotationCheck7)
