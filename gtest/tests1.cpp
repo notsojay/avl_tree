@@ -199,6 +199,61 @@ TEST(PostCheckPoint, RotationCheck7)
 	EXPECT_TRUE( trav == expected );
 }
 
+TEST(PostCheckPoint, RotationCheck8)
+{
+	MyAVLTree<int, std::string> tree;
+	tree.insert(14, "foo");
+	tree.insert(24, "foo");
+	tree.insert(10, "foo");
+	tree.insert(36, "foo");
+	tree.insert(21, "foo");
+	tree.insert(19, "foo");
+	tree.insert(44, "foo");
+
+	std::vector<int> expected = {21,14,10,19,36,24,44};
+	std::vector<int> trav = tree.preOrder();
+	EXPECT_TRUE( trav == expected );
+}
+
+TEST(PostCheckPoint, RotationCheck9)
+{
+	MyAVLTree<int, std::string> tree;
+	tree.insert(14, "foo");
+	tree.insert(24, "foo");
+	tree.insert(10, "foo");
+	tree.insert(4, "foo");
+	tree.insert(12, "foo");
+	tree.insert(11, "foo");
+		
+	std::vector<int> expected = {12,10,4,11,14,24};
+	std::vector<int> trav = tree.preOrder();
+	EXPECT_TRUE( trav == expected );
+}
+
+TEST(PostCheckPoint, RotationCheck10)
+{
+	MyAVLTree<int, std::string> tree;
+	tree.insert(14, "foo");
+	tree.insert(9, "foo");
+	tree.insert(4, "foo");
+		
+	std::vector<int> expected = {9,4,14};
+	std::vector<int> trav = tree.preOrder();
+	EXPECT_TRUE( trav == expected );
+}
+
+TEST(PostCheckPoint, RotationCheck10)
+{
+	MyAVLTree<int, std::string> tree;
+	tree.insert(14, "foo");
+	tree.insert(24, "foo");
+	tree.insert(34, "foo");
+	
+	std::vector<int> expected = {24,14,34};
+	std::vector<int> trav = tree.preOrder();
+	EXPECT_TRUE( trav == expected );
+}
+
 TEST(PostCheckPoint, RuntimeErrorTest1)
 {
 	MyAVLTree<int, int> tree;
