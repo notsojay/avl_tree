@@ -242,7 +242,7 @@ TEST(PostCheckPoint, RotationCheck10)
 	EXPECT_TRUE( trav == expected );
 }
 
-TEST(PostCheckPoint, RotationCheck10)
+TEST(PostCheckPoint, RotationCheck11)
 {
 	MyAVLTree<int, std::string> tree;
 	tree.insert(14, "foo");
