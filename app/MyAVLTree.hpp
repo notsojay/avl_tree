@@ -107,12 +107,12 @@ private:
 	void postOrder(std::vector<Key>& path, MyAVLNode<Key, Value>* node) const;
 	void clear();
 	void clear(MyAVLNode<Key, Value>* node);
-	int getBalancedFactor(MyAVLNode<Key, Value>* node) const;
 	MyAVLNode<Key, Value>* leftRotation(MyAVLNode<Key, Value>* node);
 	MyAVLNode<Key, Value>* rightRotation(MyAVLNode<Key, Value>* node);
 	MyAVLNode<Key, Value>* leftRightRotation(MyAVLNode<Key, Value>* node);
 	MyAVLNode<Key, Value>* rightLeftRotation(MyAVLNode<Key, Value>* node);
 	void setHeight(MyAVLNode<Key, Value>* node);
+	int getHeight(MyAVLNode<Key, Value>* node) const;
 };
 
 
@@ -264,7 +264,7 @@ MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::insert(const Key & k, const Value 
 	else 
 		node->val = v;
 	setHeight(node);
-	int balanced = getBalancedFactor(node);
+	int balanced = getHeight(node->left) - getHeight(node->right);
 	if(balanced > 1)
 	{
 		if(k < node->left->key) 
@@ -331,16 +331,11 @@ void MyAVLTree<Key, Value>::clear(MyAVLNode<Key, Value>* node)
 	node = nullptr;
 }
 
-
 template<typename Key, typename Value>
-int MyAVLTree<Key, Value>::getBalancedFactor(MyAVLNode<Key, Value>* node) const
+int MyAVLTree<Key, Value>::getHeight(MyAVLNode<Key, Value>* node) const
 {
-	if(!node->left && !node->right) return 0;
-	else if(!node->left) return 0 - node->right->height;
-	else if(!node->right) return node->left->height - 0;
-	else return node->left->height - node->right->height;
+	return node == nullptr ? -1 : node->height;
 }
-
 
 template<typename Key, typename Value>
 MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::leftRotation(MyAVLNode<Key, Value>* node)
@@ -385,10 +380,7 @@ MyAVLNode<Key, Value>* MyAVLTree<Key, Value>::rightLeftRotation(MyAVLNode<Key, V
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::setHeight(MyAVLNode<Key, Value>* node)
 {
-	if(!node->left && !node->right) node->height = 1;
-	else if(!node->left) node->height = node->right->height+1;
-	else if(!node->right) node->height = node->left->height+1;
-	else node->height = std::max(node->left->height, node->right->height)+1;
+	node->height = std::max(getHeight(node->left), getHeight(node->right))+1;
 }
 
 #endif 
